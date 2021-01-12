@@ -1,11 +1,11 @@
 ## user vars ##
 
-# provide a custom download path, defaults to current dir 
+# provide a custom download path, defaults to current dir
 # (playlists always download into their own folder)
 custom_dl_dir = ''
 
 # prevents duplicates across ALL playlist download folders
-# set to false if you want a full set of videos for each 
+# set to false if you want a full set of videos for each
 # individual playlist, even if it means duplicates
 # note that duplicates within a playlist will always be prevented
 # (i.e. the script is idempotent and can be re-run without issue)
@@ -28,7 +28,7 @@ from bs4 import BeautifulSoup
 
 class Playlist:
     # html classes and attributes
-    pagination_class = 'pagination '
+    pagination_class = 'pagination'
     header_attrib = 'profile-title'
     dl_dir = os.curdir
 
@@ -36,7 +36,7 @@ class Playlist:
         self.url = url
         self.pages = []
         self.videos = []
-        
+
         print ('\n⏳ initialising playlist...\n   ➡️ ' + self.url)
         content = requests.get(self.url)
         self.soup = BeautifulSoup(content.text, 'html.parser')
@@ -65,14 +65,14 @@ class Playlist:
         pagination_block = self.soup.find(attrs={"class": self.pagination_class})
         try: # check for playlist with many pages first (i.e. pagination of pages)
             total = int(pagination_block.find(attrs={"class": "last-page"}).string)
-        except: 
+        except:
             try: # then for a multi-page playlist (no pagination of pages)
                 total = len(pagination_block.find_all('li')) - 1
                 return total
             except AttributeError: # handle single-page playlists (no pagination element)
                 total = 1
                 return total
-        else: 
+        else:
             return total
 
 
