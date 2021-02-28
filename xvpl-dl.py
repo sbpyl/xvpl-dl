@@ -26,11 +26,14 @@ import requests
 import youtube_dl
 from bs4 import BeautifulSoup
 
+
 class Playlist:
+
     # html classes and attributes
     pagination_class = 'pagination'
     header_attrib = 'profile-title'
     dl_dir = os.curdir
+
 
     def __init__(self, url):
         self.url = url
@@ -47,9 +50,10 @@ class Playlist:
             page = Page(page_url)
             self.videos = self.videos + page.videos
 
-        print ('     ➡️ total pages: ' + str(len(self.pages)))
-        print ('     ➡️ total videos: ' + str(len(self.videos)))
-        print ('')
+        print('     ➡️ total pages: ' + str(len(self.pages)))
+        print('     ➡️ total videos: ' + str(len(self.videos)))
+        print('')
+
 
     def download(self):
         pl_dl_dir = os.path.join(self.dl_dir, self.name, '')
@@ -60,6 +64,7 @@ class Playlist:
         }
         with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
             ydl.download(self.videos)
+
 
     def total_pages(self):
         pagination_block = self.soup.find(attrs={"class": self.pagination_class})
@@ -76,8 +81,6 @@ class Playlist:
             return total
 
 
-
-
     def make_pl_name(self):
         header = self.soup.find(attrs={"id": self.header_attrib})
         try:
@@ -87,11 +90,13 @@ class Playlist:
         last_path_fragment = urlparse(self.url).path.split('/')[-1]
         return (profile + '--' + last_path_fragment)
 
+
     def make_page_urls(self):
         last_page = self.total_pages()
         for p in range(0,last_page):
             page_url = self.url + '/' + str(p)
             self.pages.append(page_url)
+
 
 class Page:
     url_root = 'https://xvideos.com/video'
@@ -114,6 +119,7 @@ class Page:
         video_elements = videos_block.find_all(attrs={self.id_attrib: True})
         for video in video_elements:
             self.videos.append(self.url_root + video.get(self.id_attrib) + '/')
+
 
 args = sys.argv
 
